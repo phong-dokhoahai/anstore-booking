@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AN STORE đặt vé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="feed.js"></script>
+
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+      <div
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <h1 class="text-xl font-bold text-blue-600">AN STORE</h1>
+        <nav class="space-x-6 hidden md:block">
+          <a href="#" class="hover:text-blue-600">Trang chủ</a>
+          <a href="#booking-tickets" class="hover:text-blue-600">Đặt vé</a>
+          <a href="#booking-rooms" class="hover:text-blue-600">Đặt phòng</a>
+          <a href="#contact" class="hover:text-blue-600">Hỗ trợ</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Banner -->
+    <section id="booking-tickets" class="bg-gray-50 py-12 px-4">
+      <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-center text-blue-600 mb-6">
+          Đặt Vé Công Viên Ocean Park
+        </h2>
+
+        <!-- Loại vé -->
+        <div class="mb-4">
+          <label class="block font-semibold mb-2">Chọn loại vé:</label>
+          <select id="ticket-type" class="w-full border p-2 rounded-md">
+            <option value="OCP2">Công viên sóng (OCP2)</option>
+            <option value="OCP3">Công viên nước (OCP3)</option>
+            <option value="combo">Combo 2 công viên</option>
+          </select>
+        </div>
+
+        <!-- Ngày đi -->
+        <div class="mb-4">
+          <label class="block font-semibold mb-2">Chọn ngày đi:</label>
+          <input type="date" id="date" class="w-full border p-2 rounded-md" />
+          <p id="error-date" class="text-red-500 text-sm mt-1 hidden">
+            Vui lòng chọn ngày
+          </p>
+        </div>
+
+        <!-- Số lượng -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block font-semibold mb-2">Số người lớn (>1m4):</label>
+            <input
+              type="number"
+              min="0"
+              id="adults"
+              class="w-full border p-2 rounded-md"
+              placeholder="0"
+            />
+          </div>
+          <div>
+            <label class="block font-semibold mb-2"
+              >Số trẻ em (80cm–1m4):</label
+            >
+            <input
+              type="number"
+              min="0"
+              id="children"
+              class="w-full border p-2 rounded-md"
+              placeholder="0"
+            />
+          </div>
+          <p id="error-people" class="text-red-500 text-sm mt-2 hidden">
+            Vui lòng nhập số người
+          </p>
+        </div>
+
+        <!-- Kết quả tính giá -->
+        <div
+          class="bg-blue-50 p-4 rounded-md mb-4 text-blue-800 font-medium"
+          id="summary"
+        >
+          Hãy chọn loại vé và điền thông tin để xem tổng tiền.
+        </div>
+
+        <!-- Nút -->
+        <div class="text-center">
+          <button
+            onclick="calculatePrice()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md"
+          >
+            Tính tiền
+          </button>
+          <button
+            onclick="openBookingForm()"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md ml-4"
+          >
+            Đặt vé
+          </button>
+        </div>
+      </div>
+    </section>
+    <!-- Booking Form Modal -->
+    <div
+      id="booking-form"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
+    >
+      <div class="bg-white p-6 rounded-md max-w-md w-full shadow-lg">
+        <h3 class="text-xl font-semibold mb-4 text-center">Thông tin đặt vé</h3>
+        <form onsubmit="submitBookingForm(event)">
+          <div class="mb-4">
+            <label class="block mb-1 font-medium">Họ và tên *</label>
+            <input
+              type="text"
+              id="fullName"
+              class="w-full border p-2 rounded-md"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-medium">Số điện thoại *</label>
+            <input
+              type="tel"
+              id="phone"
+              class="w-full border p-2 rounded-md"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block mb-1 font-medium">Email (không bắt buộc)</label>
+            <input
+              type="email"
+              id="email"
+              class="w-full border p-2 rounded-md"
+            />
+          </div>
+          <div class="text-center">
+            <button
+              type="submit"
+              class="bg-blue-600 text-white px-6 py-2 rounded-md"
+            >
+              Gửi
+            </button>
+            <button
+              type="button"
+              onclick="closeBookingForm()"
+              class="ml-3 text-gray-500"
+            >
+              Hủy
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Điểm đến hot -->
+    <section id="booking-rooms" class="container mx-auto px-4 py-12">
+      <h3 class="text-2xl font-semibold mb-6">Đặt phòng</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded shadow-md overflow-hidden">
+          <img
+            src="https://source.unsplash.com/400x300/?hanoi"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h4 class="font-semibold text-lg">Phòng 1 giường</h4>
+            <p class="text-sm text-gray-500">500.000 VND/ngày</p>
+          </div>
+        </div>
+        <div class="bg-white rounded shadow-md overflow-hidden">
+          <img
+            src="https://source.unsplash.com/400x300/?danang"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h4 class="font-semibold text-lg">Phòng 2 giường A</h4>
+            <p class="text-sm text-gray-500">600.000 VND/ngày</p>
+          </div>
+        </div>
+        <div class="bg-white rounded shadow-md overflow-hidden">
+          <img
+            src="https://source.unsplash.com/400x300/?dalat"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h4 class="font-semibold text-lg">Phòng 2 giường B</h4>
+            <p class="text-sm text-gray-500">600.000 VND/ngày</p>
+          </div>
+        </div>
+        <div class="bg-white rounded shadow-md overflow-hidden">
+          <img
+            src="https://source.unsplash.com/400x300/?hochiminh"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h4 class="font-semibold text-lg">Phòng 3 giường</h4>
+            <p class="text-sm text-gray-500">900.000 VND/ngày</p>
+          </div>
+        </div>
+        <div class="bg-white rounded shadow-md overflow-hidden">
+          <img
+            src="https://source.unsplash.com/400x300/?hochiminh"
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <h4 class="font-semibold text-lg">Phòng 4 giường</h4>
+            <p class="text-sm text-gray-500">1200.000 VND/ngày</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Contact Us Section -->
+    <section id="contact" class="bg-white py-16" id="contact">
+      <div class="container mx-auto px-4 max-w-3xl text-center">
+        <h2 class="text-3xl font-bold text-blue-600 mb-6">
+          Liên hệ với chúng tôi
+        </h2>
+        <p class="text-gray-600 mb-10">
+          Nếu bạn có bất kỳ câu hỏi nào, hãy liên hệ qua các kênh sau:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          <!-- Địa chỉ -->
+          <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold mb-2">📍 Địa chỉ</h3>
+            <p>Phố đông, KT-53, Quảng trường Ktown, Vinhome Ocean Park 2</p>
+          </div>
+          <!-- Số điện thoại -->
+          <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold mb-2">📞 Điện thoại/Zalo</h3>
+            <p>0394674428</p>
+          </div>
+          <!-- Email -->
+          <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold mb-2">✉️ Email</h3>
+            <p>anstore8888@gmail.com</p>
+          </div>
+        </div>
+
+        <!-- Social Media -->
+        <div class="mt-10 flex justify-center space-x-6">
+          <!-- Facebook -->
+          <a
+            href="https://www.facebook.com/nhoclun0272001"
+            target="_blank"
+            class="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition"
+          >
+            <!-- Heroicon Facebook -->
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 5 3.66 9.13 8.44 9.88v-6.99H7.9v-2.89h2.54V9.79c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.45h-1.25c-1.23 0-1.61.76-1.61 1.54v1.85h2.74l-.44 2.89h-2.3v6.99C18.34 21.13 22 17 22 12z"
+              />
+            </svg>
+            <span>Facebook</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 text-center py-6 text-sm text-gray-500">
+      © 2025 Anstore. All rights reserved.
+    </footer>
+  </body>
+
+</html>
